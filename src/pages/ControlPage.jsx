@@ -1,4 +1,4 @@
-import { useParams } from 'react-router-dom'
+import { Link, useParams } from 'react-router-dom'
 import { puzzles } from '../data/puzzles'
 import { useFacilitatorSocket } from '../hooks/useFacilitatorSocket'
 import { useCountdown } from '../hooks/useCountdown'
@@ -162,6 +162,9 @@ export function ControlPage() {
   if (!hasSyncedOnce && connectionStatus === 'error') {
     return (
       <main className="control-page">
+        <Link to="/" className="new-game-link">
+          &larr; New Game
+        </Link>
         <h1>Game {gameCode}</h1>
         <p role="alert">{error}</p>
       </main>
@@ -171,6 +174,9 @@ export function ControlPage() {
   if (!gameState) {
     return (
       <main className="control-page">
+        <Link to="/" className="new-game-link">
+          &larr; New Game
+        </Link>
         <h1>Game {gameCode}</h1>
         <p>Connecting&hellip;</p>
       </main>
@@ -182,6 +188,9 @@ export function ControlPage() {
   return (
     <main className="control-page">
       <header className="control-header">
+        <Link to="/" className="new-game-link">
+          &larr; New Game
+        </Link>
         <h1>
           Game <span className="game-code">{gameState.gameCode}</span>
         </h1>
