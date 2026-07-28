@@ -74,7 +74,6 @@ function PuzzleOrder({ puzzleIds, currentPuzzleIndex }) {
 
 function Actions({ state, actions }) {
   const { status, currentPuzzleAnswered } = state
-  const canAdvance = ['correct', 'wrong', 'timeout'].includes(status)
 
   return (
     <div className="actions">
@@ -101,9 +100,15 @@ function Actions({ state, actions }) {
         </>
       )}
 
-      {canAdvance && (
+      {status === 'correct' && (
         <button type="button" className="action-button" onClick={actions.skip}>
           Next Puzzle
+        </button>
+      )}
+
+      {(status === 'wrong' || status === 'timeout') && (
+        <button type="button" className="action-button" onClick={actions.retry}>
+          Next Person (same puzzle)
         </button>
       )}
 
@@ -131,9 +136,13 @@ function Actions({ state, actions }) {
 /**
  * Real facilitator control panel: connects over Socket.IO as `facilitator`,
  * rejoins on every reconnect, and drives the backend's authoritative game
- * state via game:start/judge/skip/pause/resume/restart/end. The TV display
- * only ever reflects whatever this page (or another facilitator client)
- * tells the backend to do.
+ * state via game:start/judge/skip/retry/pause/resume/restart/end. The TV
+ * display only ever reflects whatever this page (or another facilitator
+ * client) tells the backend to do.
+ *
+ * On "wrong"/"timeout" the puzzle repeats for the next player in line
+ * (game:retry - same puzzle, fresh timer); only "correct" advances to the
+ * next puzzle (game:skip).
  */
 export function ControlPage() {
   const { gameCode } = useParams()
