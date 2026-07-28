@@ -107,9 +107,14 @@ function Actions({ state, actions }) {
       )}
 
       {(status === 'wrong' || status === 'timeout') && (
-        <button type="button" className="action-button" onClick={actions.retry}>
-          Next Person (same puzzle)
-        </button>
+        <>
+          <button type="button" className="action-button" onClick={actions.retry}>
+            Next Person (same puzzle)
+          </button>
+          <button type="button" className="action-button" onClick={actions.skip}>
+            Next Puzzle
+          </button>
+        </>
       )}
 
       {status === 'paused' && (
@@ -140,9 +145,11 @@ function Actions({ state, actions }) {
  * display only ever reflects whatever this page (or another facilitator
  * client) tells the backend to do.
  *
- * On "wrong"/"timeout" the puzzle repeats for the next player in line
- * (game:retry - same puzzle, fresh timer); only "correct" advances to the
- * next puzzle (game:skip).
+ * On "correct" the puzzle advances (game:skip). On "wrong"/"timeout" the
+ * facilitator chooses: retry the same puzzle for the next player in line
+ * (game:retry - same puzzle, fresh timer), or give up on it and move on
+ * anyway (game:skip) - it's never a hard requirement that the puzzle gets
+ * solved before the game moves forward.
  */
 export function ControlPage() {
   const { gameCode } = useParams()
