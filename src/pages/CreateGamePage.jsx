@@ -1,7 +1,8 @@
 import { useMemo, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 import { activePuzzles } from '../data/puzzles'
 import { apiUrl } from '../lib/api'
+import { socket } from '../socket/socket.js'
 import './CreateGamePage.css'
 
 function shuffle(list) {
@@ -13,8 +14,49 @@ function shuffle(list) {
   return result
 }
 
+/**
+ * Best-effort: briefly connects as facilitator to the OLD game's room just
+ * long enough to ask the backend to broadcast `display:redirect`, then
+ * disconnects so the new ControlPage mount starts from a clean socket
+ * (otherwise it would stay double-joined to both game rooms). Bounded by a
+ * timeout so a slow/failed ack never blocks navigation to the new game.
+ */
+function redirectDisplay(oldGameCode, newGameCode) {
+  return new Promise((resolve) => {
+    let settled = false
+
+    function done() {
+      if (settled) return
+      settled = true
+      socket.disconnect()
+      resolve()
+    }
+
+    setTimeout(done, 3000)
+
+    function join() {
+      socket.emit('game:join', { gameCode: oldGameCode, role: 'facilitator' }, (joinAck) => {
+        if (!joinAck?.success) {
+          done()
+          return
+        }
+        socket.emit('game:redirect-display', { gameCode: oldGameCode, newGameCode }, done)
+      })
+    }
+
+    if (socket.connected) {
+      join()
+    } else {
+      socket.once('connect', join)
+      socket.connect()
+    }
+  })
+}
+
 export function CreateGamePage() {
   const navigate = useNavigate()
+  const location = useLocation()
+  const fromGameCode = location.state?.fromGameCode
 
   const allPuzzleIds = useMemo(() => activePuzzles.map((puzzle) => puzzle.id), [])
   const puzzlesById = useMemo(
@@ -88,6 +130,10 @@ export function CreateGamePage() {
 
       if (!response.ok || !result.success) {
         throw new Error(result.message ?? 'Failed to create game')
+      }
+
+      if (fromGameCode) {
+        await redirectDisplay(fromGameCode, result.data.gameCode)
       }
 
       navigate(`/control/${result.data.gameCode}`)

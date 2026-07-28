@@ -162,7 +162,7 @@ export function ControlPage() {
   if (!hasSyncedOnce && connectionStatus === 'error') {
     return (
       <main className="control-page">
-        <Link to="/" className="new-game-link">
+        <Link to="/" className="new-game-link" state={{ fromGameCode: gameCode }}>
           &larr; New Game
         </Link>
         <h1>Game {gameCode}</h1>
@@ -174,7 +174,7 @@ export function ControlPage() {
   if (!gameState) {
     return (
       <main className="control-page">
-        <Link to="/" className="new-game-link">
+        <Link to="/" className="new-game-link" state={{ fromGameCode: gameCode }}>
           &larr; New Game
         </Link>
         <h1>Game {gameCode}</h1>
@@ -188,7 +188,7 @@ export function ControlPage() {
   return (
     <main className="control-page">
       <header className="control-header">
-        <Link to="/" className="new-game-link">
+        <Link to="/" className="new-game-link" state={{ fromGameCode: gameState.gameCode }}>
           &larr; New Game
         </Link>
         <h1>
