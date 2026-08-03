@@ -33,6 +33,10 @@ function StatsRow({ state }) {
         <span className="stat-value">{state.timeoutCount}</span>
         <span className="stat-label">Timed out</span>
       </div>
+      <div className="stat">
+        <span className="stat-value">{state.revealedCount}</span>
+        <span className="stat-label">Revealed</span>
+      </div>
     </div>
   )
 }
@@ -91,6 +95,9 @@ function Actions({ state, actions }) {
           <button type="button" className="action-button wrong" onClick={actions.judgeWrong} disabled={currentPuzzleAnswered}>
             Wrong
           </button>
+          <button type="button" className="action-button" onClick={actions.reveal} disabled={currentPuzzleAnswered}>
+            Reveal Answer
+          </button>
           <button type="button" className="action-button" onClick={actions.skip}>
             Skip
           </button>
@@ -100,7 +107,7 @@ function Actions({ state, actions }) {
         </>
       )}
 
-      {status === 'correct' && (
+      {(status === 'correct' || status === 'revealed') && (
         <button type="button" className="action-button" onClick={actions.skip}>
           Next Puzzle
         </button>
@@ -213,7 +220,7 @@ export function ControlPage() {
         </p>
       )}
 
-      {['playing', 'correct', 'wrong', 'timeout', 'paused'].includes(gameState.status) && (
+      {['playing', 'correct', 'wrong', 'timeout', 'revealed', 'paused'].includes(gameState.status) && (
         <PuzzlePanel puzzle={puzzle} timeRemaining={timeRemaining} showTimer={gameState.status === 'playing'} />
       )}
 
