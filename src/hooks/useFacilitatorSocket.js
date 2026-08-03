@@ -94,6 +94,7 @@ export function useFacilitatorSocket(gameCode) {
     judgeCorrect: () => emitAction('game:judge', { result: 'correct' }),
     judgeWrong: () => emitAction('game:judge', { result: 'wrong' }),
     reveal: () => emitAction('game:reveal'),
+    shuffle: () => emitAction('game:shuffle'),
     skip: () => emitAction('game:skip'),
     retry: () => emitAction('game:retry'),
     pause: () => emitAction('game:pause'),

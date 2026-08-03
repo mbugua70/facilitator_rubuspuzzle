@@ -77,13 +77,25 @@ function PuzzleOrder({ puzzleIds, currentPuzzleIndex }) {
 }
 
 function Actions({ state, actions }) {
-  const { status, currentPuzzleAnswered } = state
+  const { status, currentPuzzleAnswered, puzzleIds } = state
+  const canShuffle = puzzleIds.length > 1
 
   return (
     <div className="actions">
       {status === 'waiting' && (
-        <button type="button" className="action-button" onClick={actions.start}>
-          Start Game
+        <>
+          <button type="button" className="action-button" onClick={actions.start}>
+            Start Game
+          </button>
+          <button type="button" className="action-button" onClick={actions.shuffle} disabled={!canShuffle}>
+            Shuffle Order
+          </button>
+        </>
+      )}
+
+      {status === 'finished' && (
+        <button type="button" className="action-button" onClick={actions.shuffle} disabled={!canShuffle}>
+          Shuffle Order
         </button>
       )}
 
