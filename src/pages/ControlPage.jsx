@@ -49,7 +49,7 @@ function PuzzlePanel({ puzzle, timeRemaining, showTimer }) {
       <div className="puzzle-panel">
         <div className="puzzle-panel-images">
           <img src={puzzle.leftImage} alt="" />
-          <img src={puzzle.rightImage} alt="" />
+          {puzzle.rightImage && <img src={puzzle.rightImage} alt="" />}
         </div>
         <div className="puzzle-panel-body">
           <div className="puzzle-panel-answer">{puzzle.answer}</div>

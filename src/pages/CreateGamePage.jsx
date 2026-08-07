@@ -187,7 +187,7 @@ export function CreateGamePage() {
                   >
                     <span className="puzzle-card-images">
                       <img src={puzzle.leftImage} alt="" />
-                      <img src={puzzle.rightImage} alt="" />
+                      {puzzle.rightImage && <img src={puzzle.rightImage} alt="" />}
                     </span>
                     <span className="puzzle-answer">{puzzle.answer}</span>
                     <span className="puzzle-meta">
